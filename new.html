@@ -26,21 +26,12 @@
 
 </div>
 <div id="dialog"></div>
-<div id="grid"></div>
-
 <button id="Right">Right</button>
-<script>
-$("#grid").kendoGrid({
+<div id="grid"></div>
+<div id=newGrid></div>
 
-    columns: [ {
-    field: "fld",
-    template: "#if value!=0 #<div id='box'><span>#=value#</span></div> "
-  }],
-  dataSource: [ { name: "Jane Doe" }, { name: "John Doe" } ]
-});
-$("#dialog").kendoWindow({
-  
-});
+<script>
+
 var leftCode=37;
 var upCode=38;
 var rightCode=39;
@@ -57,20 +48,43 @@ var row={
     second:0,
     third:0,
     fourth:0,
-    fifth:0
+  //  fifth:0
 }
-var table=row[5];
+var table=row[4];
 var jsonData="";
+var startData= init(table);
+var coordsValues=[
+   [0,0,0,0],
+   [0,0,0,0],
+   [0,0,0,0],
+   [0,0,0,0]
+];
+var jsonData=JSON.stringify(coordsValues);
+console.log(jsonData);
 //var data=JSON.parse(jsonData, arrOfCoords);
 //console.log(data);
-
+var gameMatrix=initArr(coordsValues);
+console.log(gameMatrix);
 var temp=kendo.template("<div id='box'><span>#=value#</span></div> ");
 var data={value:`<b>${beginValue}</b>`};
 var res=temp(data);
+$("#grid").kendoGrid({
 
+    columns: [ {
+    //field: "fld",
+   // template: "#<div id='box'><span>#=name#</span></div> "
+  }],
+  dataSource: [  ]
+});
+$("#dialog").kendoWindow({
+  
+});
 $("#dialog").html(res);
 console.log(($('#dialog').data("kendoWindow").wrapper.offset()));
-
+$("#newGrid").kendoGrid({
+    rowTemplate: '<div id=`box`>#: name #</div>'
+        
+});
 
     
 $('#gameDiv').keydown(function(e){
@@ -82,8 +96,8 @@ console.log($('#dialog').data("kendoWindow").wrapper.offset());
     {
             $('#dialog').kendoWindow({
                 position: {
-             top: 100, // or "100px"
-             left:(leftPos+15000)
+             top: 100, 
+             left:(leftPos+150)
             } 
             });
     }
@@ -100,7 +114,69 @@ $("#Right").click(function(){
 
 
    
+function init(r)
+{
+    if(r!==undefined)
+    {
+        r[0].first=2;
+    }
+    return r;
+}
+function initArr(a)
+{
+    if(a!==undefined)
+    {
+        a[0][0]=2;
+    }
+    return a;
+    
+}
+$(document).ready().keydown(function(e){
+   
+    var win = $("#dialog").data("kendoWindow");
+var position = win.wrapper.offset();
+var currentTop=position.top;
+var currentLeft=position.left;
+   // console.log(e.keyCode);
+   switch(e.keyCode)
+   {
+    
+       case rightCode:
+           $("#dialog").kendoWindow({
+            position: {
+             top: currentTop, 
+             left:"90%"
+            } 
+           });
+           break;
+           case leftCode:
+           $("#dialog").kendoWindow({
+            position: {
+             top: currentLeft, 
+             left:"1%"
+            } 
+           });
+               break;
+               case upCode:
+               $("#dialog").kendoWindow({
+            position: {
+             top: "100%", 
+             left:currentLeft
+            } 
+           });
+           break;
+           case downCode:
+           $("#dialog").kendoWindow({
+            position: {
+             top: 0, 
+             left:currentLeft
+            } 
+           });
+           break;
 
+   }
+
+});
 
 </script>
 </body>

@@ -29,6 +29,7 @@
 <button id="Right">Right</button>
 <div id="grid"></div>
 <div id="newGrid"></div>
+<div id="table"></div>
 
 <script>
 
@@ -79,10 +80,17 @@ $("#grid").kendoGrid({
 $("#dialog").kendoWindow({
   
 });
+$("#table").kendoGrid({
+columns:[],
+dataSource:[{}]
+});
+
+
 $("#dialog").html(res);
 console.log(($('#dialog').data("kendoWindow").wrapper.offset()));
 $("#newGrid").kendoGrid({
-    rowTemplate: '<div id=`box`>#: name #</div>'
+    rowTemplate: '<div id=`box`>#: name #</div>',
+    dataSource:[coordsValues]
         
 });
 
@@ -106,7 +114,7 @@ console.log($('#dialog').data("kendoWindow").wrapper.offset());
 $("#Right").click(function(){
     $('#dialog').kendoWindow({
                 position: {
-             top: 0, // or "100px"
+             top: "1%", // or "100px"
              left:"100%"
             } 
             });
@@ -137,6 +145,8 @@ $(document).ready().keydown(function(e){
 var position = win.wrapper.offset();
 var currentTop=position.top;
 var currentLeft=position.left;
+console.log(currentTop);
+console.log(currentLeft);
    // console.log(e.keyCode);
    switch(e.keyCode)
    {
@@ -152,7 +162,7 @@ var currentLeft=position.left;
            case leftCode:
            $("#dialog").kendoWindow({
             position: {
-             top: currentLeft, 
+             top: currentTop, 
              left:"1%"
             } 
            });
@@ -160,7 +170,7 @@ var currentLeft=position.left;
                case upCode:
                $("#dialog").kendoWindow({
             position: {
-             top: "100%", 
+             top: "0%", 
              left:currentLeft
             } 
            });
@@ -168,7 +178,7 @@ var currentLeft=position.left;
            case downCode:
            $("#dialog").kendoWindow({
             position: {
-             top: 0, 
+             top: "85%", 
              left:currentLeft
             } 
            });

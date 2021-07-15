@@ -82,7 +82,7 @@ $("#dialog").kendoWindow({
 });
 $("#table").kendoGrid({
 columns:[],
-dataSource:[{}]
+dataSource:[]
 });
 
 
@@ -90,7 +90,7 @@ $("#dialog").html(res);
 console.log(($('#dialog').data("kendoWindow").wrapper.offset()));
 $("#newGrid").kendoGrid({
     rowTemplate: '<div id=`box`>#: name #</div>',
-    dataSource:[coordsValues]
+    dataSource:[jsonData]
         
 });
 

@@ -16,7 +16,7 @@
         width: 80vh;
         height:50vh;
      
-        border: 1px solid #999999;
+        border: 1px solid #e0aeae;
        
         padding: 3px;
     
@@ -30,6 +30,7 @@
 <div id="grid"></div>
 <div id="newGrid"></div>
 <div id="table"></div>
+<div id="gameGrid"></div>
 
 <script>
 
@@ -55,11 +56,149 @@ var table=row[4];
 var jsonData="";
 var startData= init(table);
 var coordsValues=[
-   [0,0,0,0],
-   [0,0,0,0],
-   [0,0,0,0],
-   [0,0,0,0]
+   [2,"","",""],
+   ["","","",""],
+   ["","","",""],
+   ["","","",""]
 ];
+var dataByRow=[
+    {
+        "first":"2",
+        "second":"",
+        "third":"2",
+        "fourth":""
+    },
+    {
+        "first":"",
+        "second":"",
+        "third":"",
+        "fourth":""
+    },
+    {
+        "first":"",
+        "second":"",
+        "third":"",
+        "fourth":""
+    },
+    {
+        "first":"",
+        "second":"",
+        "third":"",
+        "fourth":""
+    }
+   
+]
+var tempVar= arrObjInit(dataByRow);
+console.log(tempVar);
+$(document).ready(function() {
+    var res=seedAtRandomPos(coordsValues);
+    alert(res);
+    console.log(seedAtRandomPos(coordsValues));
+$(this).keydown(function(e)
+{
+    console.log(e.keyCode);
+    switch(e.keyCode)
+   {
+    
+       case rightCode:
+          // tryMoveRight(coordsValues);
+           $("#dialog").kendoWindow({
+
+            position: {
+             top: currentTop, 
+             left:"90%"
+            } 
+           });
+         alert(  seedAtRandomPos(coordsValues));
+           break;
+           case leftCode:
+           $("#dialog").kendoWindow({
+            position: {
+             top: currentTop, 
+             left:"1%"
+            } 
+           });
+               break;
+               case upCode:
+               $("#dialog").kendoWindow({
+            position: {
+             top: "0%", 
+             left:currentLeft
+            } 
+           });
+           break;
+           case downCode:
+           $("#dialog").kendoWindow({
+            position: {
+             top: "85%", 
+             left:currentLeft
+            } 
+           });
+           break;
+
+   }
+
+});
+  
+    var win = $("#dialog").data("kendoWindow");
+var position = win.wrapper.offset();
+var currentTop=position.top;
+var currentLeft=position.left;
+console.log(currentTop);
+console.log(currentLeft);
+   // console.log(e.keyCode);
+  
+                    $("#gameGrid").kendoGrid({
+             				 dataSource: {
+                     data: coordsValues
+                    
+                },
+                height: 500,
+                columns: [
+                  { field:"[0]", title: " " },
+                  { field: "[1]", title:" " },
+                  { field: "[2]", title:" "},
+                  { field: "[3]",title:" "},
+                  {
+                    groupable: true ,
+                  //  template:"#for(var i=0;i<)"
+                    //template: ""
+                  },
+                  {  hidden: true,  field: "location",title:"Location"},
+                  { command: ["edit", "destroy"], title: "&nbsp;", width: "250px" }],
+                      editable: "popup",
+                groupable: true,
+                sortable: true,
+                batch: true,
+
+                selectable: "multiple",
+                filterable: true,
+                reorderable: true,
+                resizable: true,
+                EnableAlternatingRowColor: true,
+                pageable: {
+                    refresh: true,
+                    pageSizes: true,
+                    buttonCount: 5
+
+
+   }
+                    });
+                });
+var rowData=[];
+for(var i=0; i<coordsValues.length;i++)
+{
+    rowData.push({
+        first:coordsValues[i][0],
+        second:coordsValues[i][1],
+        third:coordsValues[i][2],
+        fourth:coordsValues[i][3]
+
+    });
+
+}
+
+//var tempDataSource=kendo.data.DataSource({data:coordsValues});
 var jsonData=JSON.stringify(coordsValues);
 console.log(jsonData);
 //var data=JSON.parse(jsonData, arrOfCoords);
@@ -75,7 +214,7 @@ $("#grid").kendoGrid({
     //field: "fld",
    // template: "#<div id='box'><span>#=name#</span></div> "
   }],
-  dataSource: [  ]
+  //dataSource: tempDataSource
 });
 $("#dialog").kendoWindow({
   
@@ -90,7 +229,7 @@ $("#dialog").html(res);
 console.log(($('#dialog').data("kendoWindow").wrapper.offset()));
 $("#newGrid").kendoGrid({
     rowTemplate: '<div id=`box`>#: name #</div>',
-    dataSource:[jsonData]
+    dataSource:[coordsValues.toString()]
         
 });
 
@@ -140,7 +279,8 @@ function initArr(a)
     
 }
 $(document).ready().keydown(function(e){
-   
+   console.log(e.keyCode);
+
     var win = $("#dialog").data("kendoWindow");
 var position = win.wrapper.offset();
 var currentTop=position.top;
@@ -152,7 +292,9 @@ console.log(currentLeft);
    {
     
        case rightCode:
+          tryMoveRight(coordsValues);
            $("#dialog").kendoWindow({
+
             position: {
              top: currentTop, 
              left:"90%"
@@ -188,6 +330,178 @@ console.log(currentLeft);
 
 });
 
+function arrObjInit(obj)
+{
+    if(obj!==undefined)
+    {
+        var indexes=[];
+        var data=obj.filter(a=>(a.first=="")|| (a.second=="")|| (a.third=="") || (a.fourth==""));
+            return data;
+    }
+}
+function tryMoveRight(arr)
+{
+    if(arr!==undefined)
+    {
+        var changes=[
+            [],
+            [],
+            [],
+            []
+        ]
+        for(var i=0; i<arr.length;i++)
+        {
+            
+         for(var j=1;j<arr[i].length;j++)
+         {
+
+             if(arr[i][j]==arr[i][j-1])
+             {
+                var temp=(arr[i][j])*2;
+                changes[i].push(temp);
+
+             }
+             else{
+                 changes[i].push(arr[i][j]);
+             }
+             
+
+         }
+       /*  for(var i=0;i<changes.length;i++)
+         {
+           if(changes[i].length<arr[i].length)
+           {
+               while(changes[i].length!=arr[i].length)
+               {
+                   changes[i].unshift("");
+               }
+           }
+         }*/
+
+        }
+        for(var i=0; i<arr.length;i++)
+        {
+            for(var j=arr[i].length-1;j>=0;j--)
+            {
+                if(arr[i][j]==0)
+                {
+                    for(var c=changes[i].length-1; c>=0;c--)
+
+                    {
+
+                        arr[i][j]=changes[i][c];
+                    }
+                }
+            }
+        }
+    }
+}
+function seedAtRandomPos(arr)
+
+{
+    var coordsPossible=[[]];
+    var curCoord=[];
+    for(var i=0; i<arr.length;i++)
+    {
+        for(var j=0;j<arr[i].length;j++)
+        {
+            if(arr[i][j]=="")
+            {
+                curCoord.push(i);
+                curCoord.push(j);
+                coordsPossible.push(curCoord);
+            }
+        }
+    }
+  var coord=  Math.floor(Math.random() * coordsPossible.length);
+  console.log(coord);
+
+  var tmp=coordsPossible[coord];
+  console.log(tmp);
+  var _i=tmp[0];
+  var _j=tmp[1];
+  for(var i=0; i<arr.length;i++)
+  {
+      for(var j=0;j<arr[i].length;j++)
+      {
+          if(i==_i && j==_j)
+          {
+              arr[i][j]=2;
+          }
+      }
+  }
+  return arr;
+}
+function moveDown(arr)
+{
+    if(arr!=null && arr!==undefined)
+    {
+        var firstColumnStepsToDown=0;
+        var secondColumnStepsToDown=0;
+        var thirdColumnStepsToDown=0;
+        var fourthColumnStepsToDown=0;
+        var columnsStepsArr=[0,0,0,0];
+        
+        for(var i=1; i<arr.length;)
+        {
+            for(var j=0;j<arr[i].length;j++)
+            {
+                if(arr[i][j]==arr[i-1][j])
+                {
+                    arr[i][j]=(arr[i][j]+arr[i-1][j]);
+                    arr[i-1][j]="";
+                }
+
+            }
+        }
+
+        for(var i=arr.length-1;i>0;i--)
+        {
+            for(var j=0;j<arr[i].length;j++)
+            {
+                if(arr[i][j]=="" && arr[i-1][j]
+                )
+                {
+                    arr[i][j]=arr[i-1][j];
+                    arr[i-1][j]="";
+                }
+            }
+        }
+
+        for(var i=arr.length-1; i>0;i--)
+        {
+            for(var j=0;j<arr[i].length;j++)
+            {
+                if(arr[i][j]=="")
+                {
+                    columnsStepsArr[j]++;
+                    continue;
+                }
+
+              //  if(arr[i-1][j]==arr[i][j])
+             //   {
+              //      columnsStepsArr[j]++;
+             //       continue;
+             //   }
+
+            }
+        }
+
+    }
+
+}
+function moveUp()
+{
+
+}
+function moveLeft()
+{
+
+}
+function moveRight()
+{
+
+}
 </script>
 </body>
 </html>

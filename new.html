@@ -55,7 +55,7 @@ td .content {
   background: gold;
 }
 .k-master-row{
-    background-color: brown;
+   /* background-color: brown;*/
     color:rgb(191, 211, 154);
 }
 .k-alt {
@@ -149,6 +149,7 @@ var coordsValues=[
 ];
 var stringData=JSON.stringify(coordsValues);
 console.log("json \n"+`${stringData}`);
+
 var dataByRow=[
     {
         "first":"2",
@@ -294,23 +295,56 @@ var dataSourceNew=new kendo.data.DataSource({
             }
                
 });
+//if change two-dimension array on object of arrays
+var objData={
+first:[],
+second:[],
+third:[],
+fourth:[]
+
+};
 $("#gridSource").kendoGrid({
     dataSource:dataSourceNew, height:750,
     columns: [
                   { field:"[0]", title: " " ,
-                template: ownTemolate
-             //     template: "#if([0] == 2) {# <style>.k-grid td{background-color:`#f75f3b`;} </style><div class=`.k-grid td`></div>#}#"
+                 // attributes:{ 'style':"#([0][0]==2)? 'background-color: red; color:white;':''#" },
+              
+            //   template: ownTemolate
+             //   template: "#if( == 2) {# <style>.k-grid td{background-color:`#f75f3b`;} </style><div class=`.k-grid td`></div>#}#"
            //  template: "#if([0] == 2) {# <div>#=#</div>#}#"
                  
             },
-                  { field: "[1]", title:" "},
-                  { field: "[2]", title:" "},
+                  { field: "[1]", title:" ",
+                  //   template: ownTemolate
+                
+                },
+                  { field: "[2]", title:" ",  
+                   //template: ownTemolate
+                },
                   { field: "[3]",title:" "},
                  
                  
                //   {  hidden: true,  field: "location",title:"Location"},
                //   { command: ["edit", "destroy"], title: "&nbsp;", width: "250px" }],
                    ],
+                   dataBound: function(e) {
+    var container = $("#gridSource");
+    var cells = container.find("td[role=gridcell]");
+ 
+    for (var i = 0; i < cells.length; i++) {
+        var cell = $(cells[i]);
+       var d=cell;
+       var className=getNumberClass(Number.parseInt( d.context.innerHTML));
+       cell.addClass(className);
+       // var slot = this.slotByElement(cell);
+      //  var startHour = slot.startDate.getHours();
+        //var endHour = slot.endDate.getHours();
+ 
+        //this is basic example
+        //you sould check hours and minutes information as well
+      
+    }
+}
 
         //            dataBound: function(e) {
         //     // get the index of the UnitsInStock cell
@@ -558,17 +592,7 @@ function tryMoveRight(arr)
              
 
          }
-       /*  for(var i=0;i<changes.length;i++)
-         {
-           if(changes[i].length<arr[i].length)
-           {
-               while(changes[i].length!=arr[i].length)
-               {
-                   changes[i].unshift("");
-               }
-           }
-         }*/
-
+    
         }
         for(var i=0; i<arr.length;i++)
         {
@@ -672,19 +696,7 @@ function moveDown(arr)
         var fourthColumnStepsToDown=0;
         var columnsStepsArr=[0,0,0,0];
         
-       // for(var i=1; i<arr.length;)
-       // {
-       //     for(var j=0;j<arr[i].length;j++)
-       //     {
-         //       if(arr[i][j]==arr[i-1][j])
-            //    {
-            //        arr[i][j]=(arr[i][j]+arr[i-1][j]);
-           //         arr[i-1][j]="";
-          //      }
-
-         //   }
-         //   i+=2;
-      //  }
+     
         for(var i=arr.length-1; i>0;i--)
         {
             for(var j=0;j<arr[i].length;j++)
@@ -699,18 +711,7 @@ function moveDown(arr)
             }
         }
 
-      /*  for(var i=arr.length-1;i>0;i--)
-        {
-            for(var j=0;j<arr[i].length;j++)
-            {
-                if(arr[i][j]=="" && arr[i-1][j]
-                )
-                {
-                    arr[i][j]=arr[i-1][j];
-                    arr[i-1][j]="";
-                }
-            }
-        }*/
+     
         for(var i=0;i<arr.length-1;i++)
         {
             for(var j=0;j<arr[i].length;j++)
@@ -735,11 +736,7 @@ function moveDown(arr)
                     continue;
                 }
 
-              //  if(arr[i-1][j]==arr[i][j])
-             //   {
-              //      columnsStepsArr[j]++;
-             //       continue;
-             //   }
+          
 
             }
         }
@@ -758,20 +755,7 @@ function moveUp(arr)
         var thirdColumnStepsToDown=0;
         var fourthColumnStepsToDown=0;
         var columnsStepsArr=[0,0,0,0];
-        
-    //    for(var i=1; i<arr.length;)
-      //  {
-     //       for(var j=0;j<arr[i].length;j++)
-      //      {
-      //          if(arr[i][j]==arr[i-1][j])
-      //          {
-       //             arr[i][j]=(arr[i][j]+arr[i-1][j]);
-        //            arr[i-1][j]="";
-        //        }
-
-        //    }
-        //    i+=2;
-      //  }
+  
         for(var i=0; i<arr.length-1;i++)
         {
             for(var j=0; j<arr[i].length;j++)
@@ -797,30 +781,7 @@ function moveUp(arr)
             }
         }
 
-      /*  for(var i=arr.length-1;i>0;i--)
-        {
-            for(var j=0;j<arr[i].length;j++)
-            {
-                if(arr[i][j]=="" && arr[i-1][j]
-                )
-                {
-                    arr[i][j]=arr[i-1][j];
-                    arr[i-1][j]="";
-                }
-            }
-        }*/
-      //  for(var i=0;i<arr.length-1;i++)
-      //  {
-      //      for(var j=0;j<arr[i].length;j++)
-        //    {
-        //        if(arr[i][j]!="" && arr[i+1][j]=="")
-         //       {
-          //          arr[i+1][j]=arr[i][j];
-         //           arr[i][j]="";
-         //       }
-        //    }
-    //    }
-        return arr;
+             return arr;
 
 }
 }
@@ -853,13 +814,7 @@ function moveLeft(arr)
                         j=arr[i].length-1;
                         i=0;
                     }
-                 //   else{
-                //        wasChanged=false;
-               //     }
-               //     if(wasChanged)
-               //     {
-               //         j=arr[i].length-1;
-                //    }
+           
             }
         }
       
@@ -970,26 +925,43 @@ function isPossibleDownMove(arr)
     }
     return isPossible;
 }
-function ownTemolate(i)
+
+function  ownTemolate(i)
 {
    
    // for(var f=0;f<i.length;f++)
     // {  
         //var temp=kendo.template("#for(var t=0;t<i.length;t++){##if(getNumberClass(i[f])==`two`){# <span class=two>#=value#</span>#}# ");
-   
+   //"#for(var f=0;f<value.length;f++){#"+
         var length=i.length;
       var t=  getNumberClass(i[0]);
-         var temp=kendo.template(//"#for(var f=0;f<value.length;f++){#"+
-         "#if(getNumberClass(2)=='two'){# <div class=two>#=value#</div>#} else {# <div>1233<div> #}#");
-          // var text="GAME OVER";
-            var data={value:`<b>${i[0]}</b>`};
-           
-        var res=temp(data);
-        return  res; //(getNumberClass(i[0])=="two")? "<span class=two>#=value#</span>":`${i[0]}`;
+   //   for(var j=0; j<i.length;j++)
+     // {
+
+      //  var temp=kendo.template(  " #if(getNumberClass(i)=='two'){#  <div class=two>#changeBackground();# #=value#</div>#} else {# <div>#=value#<div> #}# ");
+    //  var name=getNumberClass(i[j]);
+         //var temp=kendo.template(  " <div style='background-color:red'>&nbsp; #=value#</div>");
+       
+         var temp=kendo.template(  "#for(var z=0; z< qq.length;z++){#  <div class='#getNumberClass(qq[i])#'>  #=qq[z]#</div> #}# ");
+       
+        // var temp=kendo.template(  "  <div class=#getNumberClass(name)#>  #=name#</div> ");
+       
+            // var text="GAME OVER";
+            var data={qq:`<b>${i}</b>`};
+           // var data={qq:`<b>${i}</b>, name:i[j]`};
+            var res=temp(data);
+        return   res;
+      //   }
+      //(getNumberClass(i[0])=="two")? "<span class=two>#=value#</span>":`${i[0]}`;
        
   //  }
    
       
+}
+function changeBackground()
+{
+    $(this).addClass('two_hundred_fifty_six');
+    return true;
 }
 function isPossibleUpMove(arr)
 {
@@ -1067,11 +1039,10 @@ function getNumberClass(n)
         case 8:
             return "eight";
             case 16:
-                return "sixsteen";
+                return "sixteen";
             case 32:
                 return "thirty_two";
-                case 64:return
-                "sixty_four";
+         case 64: return "sixty_four";
             case 128: return "one_hundred_twenty_eight";
             case 256: return "two_hundred_fifty_six";
             case 512:return "fife_hundred_twelve";

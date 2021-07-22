@@ -82,6 +82,9 @@ td .content {
 .one_hundred_twenty_eight{
     background-color: #edd073;
 }
+.two_hundred_fifty_six{
+    background-color:#eff14f ;
+}
 
 /* take care of portrait orientation or ratio */
 
@@ -1030,18 +1033,12 @@ function getNumberClass(n)
 {
     switch(n)
     {
-        case 2:
-            return "two";
-            break;
-            case 4:
-                return "four";
-                break;
-        case 8:
-            return "eight";
-            case 16:
-                return "sixteen";
-            case 32:
-                return "thirty_two";
+        case 2:  return "two";
+        case 4: return "four";
+                
+        case 8:return "eight";
+            case 16: return "sixteen";
+            case 32: return "thirty_two";
          case 64: return "sixty_four";
             case 128: return "one_hundred_twenty_eight";
             case 256: return "two_hundred_fifty_six";

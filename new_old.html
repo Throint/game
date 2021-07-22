@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Kendo UI Snippet</title>
+
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.default-v2.min.css"/>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2021.2.616/js/kendo.all.min.js"></script>
+</head>
+<body>
+
+<style>
+body {
+  margin: 0;
+   
+    font-style: italic;
+   
+    
+}
+
+
+.k-grid {
+        width: 500px;
+        background-color: bisque;
+      }
+      table {
+  width: 90%;
+}
+.k-grid td{
+    text-align: center;
+    vertical-align:middle;
+    font-size:12pt;
+    color:greenyellow;
+    /* background-color: blanchedalmond; */
+    font-weight: bold;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+td {
+  width: 25%;
+  position: relative;
+}
+td:after {
+  content: '';
+  display: block;
+  margin-top: 100%;
+}
+td .content {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: gold;
+}
+.k-master-row{
+   /* background-color: brown;*/
+    color:rgb(191, 211, 154);
+}
+.k-alt {
+    background-color: burlywood;
+}
+.two{
+    background-color: #eee4da;
+}
+.four{
+    background-color: #eee1c9;
+}
+.eight{
+    background-color: #f3b27a;
+}
+.sixteen{
+    background-color: #f69664;
+}
+.thirty_two{
+    background-color: #f77c5f;
+}
+.sixty_four{
+    background-color: #f75f3b;
+}
+.one_hundred_twenty_eight{
+    background-color: #edd073;
+}
+.two_hundred_fifty_six{
+    background-color:#eff14f ;
+}
+
+/* take care of portrait orientation or ratio */
+
+html {
+  height: 100%;
+  display: flex;
+}
+
+body {
+  margin: auto;
+}
+
+</style>  
+<div id="gameArea" class ="area">
+
+</div>
+<div id="dialog" hidden="true"></div>
+
+<div id="grid"></div>
+<div id="newGrid"></div>
+<div id="table"></div>
+<div id="gameGrid"></div>
+<div id="gridSource"></div>
+<div id="MessageShow"></div>
+<div id="Popup"></div>
+<button id="ResetBtn">Reset</button>
+
+<script id="javascriptTemplate"  type="text/x-kendo-template">
+    #for(var t=0;t<coordsValues[0];t++)
+
+    {#
+        if(getNumberClass(coordsValues[t])=='two'){# <div class=two>#=value[0]#</div>#} else {# <div>1233<div> #}# #}#
+    #}#
+ 
+
+</script>
+<script>
+
+var leftCode=37;
+var upCode=38;
+var rightCode=39;
+var downCode=40;
+var i=0;
+var beginValue=2;
+var arrOfCoords=[
+[]
+
+];
+
+var row={
+    first:0,
+    second:0,
+    third:0,
+    fourth:0,
+  //  fifth:0
+}
+var table=row[4];
+var jsonData="";
+var startData= init(table);
+var coordsValues=[
+   [2,2,2,""],
+   [2,"","",""],
+   ["","","",""],
+   ["","","",""]
+];
+var stringData=JSON.stringify(coordsValues);
+console.log("json \n"+`${stringData}`);
+
+var dataByRow=[
+    {
+        "first":"2",
+        "second":"",
+        "third":"2",
+        "fourth":""
+    },
+    {
+        "first":"",
+        "second":"",
+        "third":"",
+        "fourth":""
+    },
+    {
+        "first":"",
+        "second":"",
+        "third":"",
+        "fourth":""
+    },
+    {
+        "first":"",
+        "second":"",
+        "third":"",
+        "fourth":""
+    }
+   
+]
+var tempVar= arrObjInit(dataByRow);
+console.log(tempVar);
+$(document).ready(function() {
+  //  var res=seedAtRandomPos(coordsValues);
+  //  alert(res);
+    console.log(seedAtRandomPos(coordsValues));
+$(this).keydown(function(e)
+{
+    console.log(e.keyCode);
+    switch(e.keyCode)
+   {
+    
+       case rightCode:
+       console.log(moveRight(coordsValues));
+       coordsValues=seedAtRandomPos(coordsValues);
+       $("#gridSource").data("kendoGrid").dataSource.read();
+       $("#gridSource").data("kendoGrid").refresh();
+       getResult(coordsValues);
+          // tryMoveRight(coordsValues);
+           $("#dialog").kendoWindow({
+
+            position: {
+             top: currentTop, 
+             left:"90%"
+            } 
+           });
+      //   alert(  seedAtRandomPos(coordsValues));
+           break;
+           case leftCode:
+               console.log(moveLeft(coordsValues));
+               coordsValues=seedAtRandomPos(coordsValues);
+              getResult(coordsValues);
+               $("#gridSource").data("kendoGrid").dataSource.read();
+       $("#gridSource").data("kendoGrid").refresh();
+           $("#dialog").kendoWindow({
+            position: {
+             top: currentTop, 
+             left:"1%"
+            } 
+           });
+               break;
+               case upCode:
+                   console.log(moveUp(coordsValues));
+                   coordsValues=seedAtRandomPos(coordsValues);
+                   getResult(coordsValues);
+                   $("#gridSource").data("kendoGrid").dataSource.read();
+       $("#gridSource").data("kendoGrid").refresh();
+               $("#dialog").kendoWindow({
+            position: {
+             top: "0%", 
+             left:currentLeft
+            } 
+           });
+           break;
+           case downCode:
+              console.log(moveDown(coordsValues));
+              coordsValues=seedAtRandomPos(coordsValues);
+              getResult(coordsValues);
+              $("#gridSource").data("kendoGrid").dataSource.read();
+       $("#gridSource").data("kendoGrid").refresh();
+           $("#dialog").kendoWindow({
+            position: {
+             top: "85%", 
+             left:currentLeft
+            } 
+           });
+           break;
+
+   }
+
+});
+  
+    var win = $("#dialog").data("kendoWindow");
+var position = win.wrapper.offset();
+var currentTop=position.top;
+var currentLeft=position.left;
+console.log(currentTop);
+console.log(currentLeft);
+var dataSourceNew=new kendo.data.DataSource({
+
+    transport: {
+                    read: function (e) {
+                        // On success.
+                        e.success(coordsValues);
+                        // On failure.
+                        //e.error("XHR response", "status code", "error message");
+                    },
+                   
+                   update: function (e) {
+                        // Locate item in original datasource and update it.
+                       coordsValues=e;
+                        // On success.
+                       e.success();
+                        // On failure.
+                         e.error("XHR response", "status code", "error message");
+                  }
+                  
+                },
+                error: function (e) {
+                    // Handle data operation error.
+                    alert("Status: " + e.status + "; Error message: " + e.errorThrown);
+                },
+               // pageSize: 10,
+                batch: false,
+
+                schema: {
+              model: {
+               
+                fields: {
+                  "[0]": { type: "(string | number)" },
+                  "[1]": { type:"(string | number)"},
+                  "[2]": { type: "(string | number)" },
+                  "[3]": { type: "(string | number)" }
+                }
+              }
+            }
+               
+});
+//if change two-dimension array on object of arrays
+var objData={
+first:[],
+second:[],
+third:[],
+fourth:[]
+
+};
+$("#gridSource").kendoGrid({
+    dataSource:dataSourceNew, height:750,
+    columns: [
+                  { field:"[0]", title: " " ,
+                 // attributes:{ 'style':"#([0][0]==2)? 'background-color: red; color:white;':''#" },
+              
+            //   template: ownTemolate
+             //   template: "#if( == 2) {# <style>.k-grid td{background-color:`#f75f3b`;} </style><div class=`.k-grid td`></div>#}#"
+           //  template: "#if([0] == 2) {# <div>#=#</div>#}#"
+                 
+            },
+                  { field: "[1]", title:" ",
+                  //   template: ownTemolate
+                
+                },
+                  { field: "[2]", title:" ",  
+                   //template: ownTemolate
+                },
+                  { field: "[3]",title:" "},
+                 
+                 
+               //   {  hidden: true,  field: "location",title:"Location"},
+               //   { command: ["edit", "destroy"], title: "&nbsp;", width: "250px" }],
+                   ],
+                   dataBound: function(e) {
+    var container = $("#gridSource");
+    var cells = container.find("td[role=gridcell]");
+ 
+    for (var i = 0; i < cells.length; i++) {
+        var cell = $(cells[i]);
+       var d=cell;
+       var className=getNumberClass(Number.parseInt( d.context.innerHTML));
+       cell.addClass(className);
+       // var slot = this.slotByElement(cell);
+      //  var startHour = slot.startDate.getHours();
+        //var endHour = slot.endDate.getHours();
+ 
+        //this is basic example
+        //you sould check hours and minutes information as well
+      
+    }
+}
+
+        //            dataBound: function(e) {
+        //     // get the index of the UnitsInStock cell
+        //     var columns = e.sender.columns;
+        //  //   var columnIndex = this.wrapper.find(".k-grid-header [data-field=" + "[1]" + "]").index();
+        //             var columnIndex=0;
+        //     // iterate the table rows and apply custom row and cell styling
+        //     var rows = e.sender.tbody.children();
+           
+        //     for (var j = 0; j < rows.length; j++) {
+        //       var row = $(rows[j]);
+        //       var dataItem = e.sender.dataItem(row);
+
+        //       var units = dataItem.get("[0]");
+        //       var discontinued = dataItem.get("Discontinued");
+
+        //       if (discontinued) {
+        //         row.addClass("discontinued");
+        //       }
+
+        //       var cell = row.children().eq(columnIndex);
+        //       cell.addClass(getNumberClass(units));
+        //     }
+        //   }
+
+                   
+});
+
+
+   // console.log(e.keyCode);
+  
+                  /*  $("#gameGrid").kendoGrid({
+             				 dataSource: 
+                            
+                              {
+                     data: coordsValues,
+                    
+                    
+                },
+                height: 500,
+                columns: [
+                  { field:"[0]", title: " " },
+                  { field: "[1]", title:" " },
+                  { field: "[2]", title:" "},
+                  { field: "[3]",title:" "},
+                 ,
+               //   {  hidden: true,  field: "location",title:"Location"},
+               //   { command: ["edit", "destroy"], title: "&nbsp;", width: "250px" }],
+                   ],
+                      editable: "popup",
+              //  groupable: true,
+              //  sortable: true,
+              //  batch: true,
+
+                selectable: "multiple",
+              //  filterable: true,
+                reorderable: true,
+                resizable: true,
+                EnableAlternatingRowColor: true,
+                pageable: {
+                    refresh: true,
+                    pageSizes: true,
+                    buttonCount: 5
+
+
+                    }
+                    });*/
+                });
+
+var rowData=[];
+for(var i=0; i<coordsValues.length;i++)
+{
+    rowData.push({
+        first:coordsValues[i][0],
+        second:coordsValues[i][1],
+        third:coordsValues[i][2],
+        fourth:coordsValues[i][3]
+
+    });
+
+}
+
+//var tempDataSource=kendo.data.DataSource({data:coordsValues});
+var jsonData=JSON.stringify(coordsValues);
+console.log(jsonData);
+//var data=JSON.parse(jsonData, arrOfCoords);
+//console.log(data);
+var gameMatrix=initArr(coordsValues);
+console.log(gameMatrix);
+var temp=kendo.template("<div id='box'><span>#=value#</span></div> ");
+var data={value:`<b>${beginValue}</b>`};
+var res=temp(data);
+$("#grid").kendoGrid({
+
+    columns: [ {
+    //field: "fld",
+   // template: "#<div id='box'><span>#=name#</span></div> "
+  }],
+  //dataSource: tempDataSource
+});
+$("#dialog").kendoWindow({
+  
+});
+$("#table").kendoGrid({
+columns:[],
+dataSource:[]
+});
+
+
+$("#dialog").html(res);
+console.log(($('#dialog').data("kendoWindow").wrapper.offset()));
+$("#newGrid").kendoGrid({
+    rowTemplate: '<div id=`box`>#: name #</div>',
+    dataSource:[coordsValues.toString()]
+        
+});
+
+    
+$('#gameDiv').keydown(function(e){
+var win = $("#dialog").data("kendoWindow");
+var position = win.wrapper.offset();
+var leftPos=position.left;
+console.log($('#dialog').data("kendoWindow").wrapper.offset());
+    if(e.keyCode==rightCode)
+    {
+            $('#dialog').kendoWindow({
+                position: {
+             top: 100, 
+             left:(leftPos+150)
+            } 
+            });
+    }
+
+});
+
+
+
+   
+function init(r)
+{
+    if(r!==undefined)
+    {
+        r[0].first=2;
+    }
+    return r;
+}
+function initArr(a)
+{
+    if(a!==undefined)
+    {
+        a[0][0]=2;
+    }
+    return a;
+    
+}
+/*
+$(document).ready().keydown(function(e){
+   console.log(e.keyCode);
+
+    var win = $("#dialog").data("kendoWindow");
+var position = win.wrapper.offset();
+var currentTop=position.top;
+var currentLeft=position.left;
+console.log(currentTop);
+console.log(currentLeft);
+   // console.log(e.keyCode);
+   switch(e.keyCode)
+   {
+    
+       case rightCode:
+         // tryMoveRight(coordsValues);
+           $("#dialog").kendoWindow({
+
+            position: {
+             top: currentTop, 
+             left:"90%"
+            } 
+           });
+           break;
+           case leftCode:
+           $("#dialog").kendoWindow({
+            position: {
+             top: currentTop, 
+             left:"1%"
+            } 
+           });
+               break;
+               case upCode:
+               $("#dialog").kendoWindow({
+            position: {
+             top: "0%", 
+             left:currentLeft
+            } 
+           });
+           break;
+           case downCode:
+            
+
+           $("#dialog").kendoWindow({
+            position: {
+             top: "85%", 
+             left:currentLeft
+            } 
+           });
+           break;
+
+   }
+
+});*/
+
+function arrObjInit(obj)
+{
+    if(obj!==undefined)
+    {
+        var indexes=[];
+        var data=obj.filter(a=>(a.first=="")|| (a.second=="")|| (a.third=="") || (a.fourth==""));
+            return data;
+    }
+}
+function tryMoveRight(arr)
+{
+    if(arr!==undefined)
+    {
+        var changes=[
+            [],
+            [],
+            [],
+            []
+        ]
+        for(var i=0; i<arr.length;i++)
+        {
+            
+         for(var j=1;j<arr[i].length;j++)
+         {
+
+             if(arr[i][j]==arr[i][j-1])
+             {
+                var temp=(arr[i][j])*2;
+                changes[i].push(temp);
+
+             }
+             else{
+                 changes[i].push(arr[i][j]);
+             }
+             
+
+         }
+    
+        }
+        for(var i=0; i<arr.length;i++)
+        {
+            for(var j=arr[i].length-1;j>=0;j--)
+            {
+                if(arr[i][j]==0)
+                {
+                    for(var c=changes[i].length-1; c>=0;c--)
+
+                    {
+
+                        arr[i][j]=changes[i][c];
+                    }
+                }
+            }
+        }
+    }
+}
+function seedAtRandomPos(arr)
+
+{
+    var coordsPossible=[[]];
+    var curCoord=[];
+    for(var i=0; i<arr.length;i++)
+    {
+        for(var j=0;j<arr[i].length;j++)
+        {
+            if(arr[i][j]=="")
+            {
+                curCoord.push(i);
+                curCoord.push(j);
+                coordsPossible.push(curCoord);
+            }
+        }
+    }
+  var coord=  Math.floor(Math.random() * coordsPossible.length);
+  console.log(coord);
+
+  var tmp=coordsPossible[coord];
+  var max=0;
+  for(var i=0; i<arr.length;i++)
+  {
+      for(var j=0;j<arr[i].length;j++)
+      {
+          if(arr[i][j]>max)
+          {
+              max=arr[i][j];
+          }
+      }
+  }
+  console.log(`max value is ${max}`);
+  var randomValues=[];
+for(var i=1;i<20;i++ )
+{
+    if(Math.pow(2,i)==max)
+    {
+        for(var j=1;j<=i;j++)
+        {
+            if(j>3)
+            {
+                 randomValues.push(Math.pow(2,j-3));
+            }
+            else{
+                if(!randomValues.includes(2))
+                {
+                randomValues.push(2);
+                }
+            }
+           
+           
+        }
+         break;
+    }
+}
+console.log(randomValues);
+var rnd_res=Math.floor(Math.random()*randomValues.length);
+console.log(`random ${rnd_res}  ${randomValues[rnd_res]}`);
+  console.log(tmp);
+  var _i=tmp[0];
+  var _j=tmp[1];
+  for(var i=0; i<arr.length;i++)
+  {
+      for(var j=0;j<arr[i].length;j++)
+      {
+          if(i==_i && j==_j)
+          {
+              arr[i][j]=randomValues[rnd_res];
+            //arr[i][j]=2;
+        }
+      }
+  }
+  return arr;
+}
+function moveDown(arr)
+{
+    if(arr!=null && arr!==undefined)
+    {
+        var firstColumnStepsToDown=0;
+        var secondColumnStepsToDown=0;
+        var thirdColumnStepsToDown=0;
+        var fourthColumnStepsToDown=0;
+        var columnsStepsArr=[0,0,0,0];
+        
+     
+        for(var i=arr.length-1; i>0;i--)
+        {
+            for(var j=0;j<arr[i].length;j++)
+            {
+                if(arr[i][j]==arr[i-1][j] && arr[i][j]!="")
+                {
+                    arr[i][j]=(arr[i][j]*2);
+                    arr[i-1][j]="";
+                   // i=0;
+
+                }
+            }
+        }
+
+     
+        for(var i=0;i<arr.length-1;i++)
+        {
+            for(var j=0;j<arr[i].length;j++)
+            {
+                if(arr[i][j]!="" && arr[i+1][j]=="")
+                {
+                    arr[i+1][j]=arr[i][j];
+                    arr[i][j]="";
+                    i=0;
+                    j=0;
+                }
+            }
+        }
+
+        for(var i=arr.length-1; i>0;i--)
+        {
+            for(var j=0;j<arr[i].length;j++)
+            {
+                if(arr[i][j]=="")
+                {
+                    columnsStepsArr[j]++;
+                    continue;
+                }
+
+          
+
+            }
+        }
+
+    }
+    return arr;
+
+}
+function moveUp(arr)
+{
+
+    if(arr!=null && arr!==undefined)
+    {
+        var firstColumnStepsToDown=0;
+        var secondColumnStepsToDown=0;
+        var thirdColumnStepsToDown=0;
+        var fourthColumnStepsToDown=0;
+        var columnsStepsArr=[0,0,0,0];
+  
+        for(var i=0; i<arr.length-1;i++)
+        {
+            for(var j=0; j<arr[i].length;j++)
+            {
+                if(arr[i][j]==arr[i+1][j] && arr[i][j]!="")
+                {
+                    arr[i][j]=(arr[i][j]*2);
+                    arr[i+1][j]="";
+                }
+            }
+        }
+        for(var i=arr.length-1;i>0;i--)
+        {
+            for(var j=0;j<arr[i].length;j++)
+            {
+                if(arr[i][j]!="" && arr[i-1][j]=="")
+                {
+                    arr[i-1][j]=arr[i][j];
+                    arr[i][j]="";
+                    i=arr.length-1;
+                    j=0;
+                }
+            }
+        }
+
+             return arr;
+
+}
+}
+function moveLeft(arr)
+{
+    var wasChanged=false;
+    if(arr!=null && arr!==undefined)
+    {
+        for(var i=0; i<arr.length;i++)
+        {
+            for(var j=0;j<arr[i].length-1;j++)
+            {
+                if(arr[i][j]==arr[i][j+1]  && arr[i][j]!="")
+                {
+                    arr[i][j]=(arr[i][j+1]+arr[i][j]);
+                    arr[i][j+1]="";
+                }
+                
+            }
+        }
+      
+        for(var i=0;i<arr.length;i++)
+        {
+            for(var j=arr[i].length-1;j>0;j--)
+            {
+                    if(arr[i][j]!="" && arr[i][j-1]=="")
+                    {
+                        arr[i][j-1]=arr[i][j];
+                        arr[i][j]="";
+                        j=arr[i].length-1;
+                        i=0;
+                    }
+           
+            }
+        }
+      
+        
+        return arr;
+
+    }
+
+}
+function moveRight(arr)
+{
+
+    if(arr!=null && arr!==undefined)
+    {
+        for(var i=0; i<arr.length;i++)
+        {
+            for(var j=arr[i].length-1;j>0;j--)
+            {
+                if(arr[i][j]==arr[i][j-1]  && arr[i][j]!="")
+                {
+                    arr[i][j]=(arr[i][j-1]+arr[i][j]);
+                    arr[i][j-1]="";
+                }
+                
+            }
+        }
+        for(var i=0;i<arr.length;i++)
+        {
+           
+            for(var j=0; j<arr[i].length;j++)
+            {
+                if(arr[i][j]!="" && arr[i][j+1]=="")
+                {
+                    arr[i][j+1]=arr[i][j];
+                    arr[i][j]="";
+                    j=0;
+                    i=0;
+                }
+            }
+        }
+        return arr;
+
+    }
+}
+function getResult(arr)
+{
+    if(!isPossibleToMove(arr))
+    {
+        var max=0;
+        var resultShow=$("#Popup");
+       
+        for(var i=0;i<arr.length;i++)
+        {
+            for(var j=0;j<arr[i].length;j++)
+            {
+                if(arr[i][j]>max)
+                {
+                    max=arr[i][j];
+
+                }
+            }
+        }
+        resultShow.kendoDialog({
+            width: "450px",
+            title: "GAME OVER",
+            closable: false,
+            modal: false,
+            content: `<p>Game over. Max value is ${max}<p>`,
+                actions: [
+                { text: 'Ok' }
+             
+            ]
+          
+           // close: onClose
+        });
+        resultShow.data("kendoDialog").open();
+     /*   var temp=kendo.template("<div id='box'><center><b><GAME OVER></b></center></br><span>#=value#</span></div> ");
+            var text="GAME OVER";
+            var data={value:`<b>${max}</b>`};
+        var res=temp(data);
+        $("#MessageShow").html(res);
+        $("#MessageShow").kendoWindow({
+
+        });*/
+      //  $("#MessageShow").kendoWindow({}).open().center();
+      //  $("#MessageShow").show();
+     //   return max;
+    }
+}
+function isPossibleToMove(arr)
+{
+    var isPossible=(isPossibleDownMove(arr)|| isPossibleUpMove(arr) || isPossibleLeftMove(arr) || isPossibleRightMove(arr));
+    return isPossible;
+}
+function isPossibleDownMove(arr)
+{
+    var isPossible=false;
+    for(var i=0;i<arr.length-1;i++)
+    {
+        for(var j=0;j<arr[i].length;j++)
+        {
+            if(arr[i+1][j]=="" || (arr[i][j]==arr[i+1][j]))
+            {
+                isPossible=true;
+                return isPossible;
+            }
+        }
+    }
+    return isPossible;
+}
+
+function  ownTemolate(i)
+{
+   
+   // for(var f=0;f<i.length;f++)
+    // {  
+        //var temp=kendo.template("#for(var t=0;t<i.length;t++){##if(getNumberClass(i[f])==`two`){# <span class=two>#=value#</span>#}# ");
+   //"#for(var f=0;f<value.length;f++){#"+
+        var length=i.length;
+      var t=  getNumberClass(i[0]);
+   //   for(var j=0; j<i.length;j++)
+     // {
+
+      //  var temp=kendo.template(  " #if(getNumberClass(i)=='two'){#  <div class=two>#changeBackground();# #=value#</div>#} else {# <div>#=value#<div> #}# ");
+    //  var name=getNumberClass(i[j]);
+         //var temp=kendo.template(  " <div style='background-color:red'>&nbsp; #=value#</div>");
+       
+         var temp=kendo.template(  "#for(var z=0; z< qq.length;z++){#  <div class='#getNumberClass(qq[i])#'>  #=qq[z]#</div> #}# ");
+       
+        // var temp=kendo.template(  "  <div class=#getNumberClass(name)#>  #=name#</div> ");
+       
+            // var text="GAME OVER";
+            var data={qq:`<b>${i}</b>`};
+           // var data={qq:`<b>${i}</b>, name:i[j]`};
+            var res=temp(data);
+        return   res;
+      //   }
+      //(getNumberClass(i[0])=="two")? "<span class=two>#=value#</span>":`${i[0]}`;
+       
+  //  }
+   
+      
+}
+function changeBackground()
+{
+    $(this).addClass('two_hundred_fifty_six');
+    return true;
+}
+function isPossibleUpMove(arr)
+{
+    var isPossible=false;
+    for(var i=arr.length-1;i>0;i--)
+    {
+        for(var j=0;j<arr[i].length;j++)
+        {
+            if(arr[i-1][j]=="" || (arr[i][j]==arr[i-1][j]))
+            {
+                isPossible=true;
+                return isPossible;
+            }
+        }
+    }
+    return isPossible;
+}
+$("#ResetBtn").click(function()
+{
+    for(var i=0;i<coordsValues.length;i++)
+    {
+        for(var j=0;j<coordsValues[i].length;j++)
+        {
+            coordsValues[i][j]="";
+        }
+    }
+    coordsValues[0][0]=2;
+    coordsValues[0][coordsValues[0].length-1]=2;    
+    $("#gridSource").data("kendoGrid").dataSource.read();
+       $("#gridSource").data("kendoGrid").refresh();
+});
+function isPossibleRightMove(arr)
+{
+    var isPossible=false;
+    for(var i=0;i<arr.length;i++)
+    {
+        for(var j=0;j<arr[i].length-1;j++)
+        {
+            if(arr[i][j+1]=="" || (arr[i][j]==arr[i][j+1]))
+            {
+                isPossible=true;
+                return isPossible;
+            }
+        }
+    }
+    return isPossible;
+}
+function isPossibleLeftMove(arr)
+{
+    var isPossible=false;
+    for(var i=0;i<arr.length;i++)
+    {
+        for(var j=arr[i].length-1;j>0;j--)
+        {
+            if(arr[i][j-1]=="" || (arr[i][j]==arr[i][j-1]))
+            {
+                isPossible=true;
+                return isPossible;
+            }
+        }
+    }
+    return isPossible;
+}
+
+function getNumberClass(n)
+{
+    switch(n)
+    {
+        case 2:  return "two";
+        case 4: return "four";
+                
+        case 8:return "eight";
+            case 16: return "sixteen";
+            case 32: return "thirty_two";
+         case 64: return "sixty_four";
+            case 128: return "one_hundred_twenty_eight";
+            case 256: return "two_hundred_fifty_six";
+            case 512:return "fife_hundred_twelve";
+            case 1024:return "one_thousand_twenty_four";
+            case 2048: return "two_thousand_fourty_eight";
+    }
+}
+</script>
+</body>
+</html>
